@@ -38,6 +38,8 @@ Containers will be one of the main building blocks for your applications. But in
 
 As described Pod is a set of containers running on one node. Just to reiterate - pod is unsplittable. This means they are scheduled as one unit. 
 
+![alt text](./images/pic1-container-pod.png "Pic 1. Pod")
+
     
 ```    
 * Nodes [node]:
