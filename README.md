@@ -40,7 +40,6 @@ As described Pod is a set of containers running on one node. Just to reiterate -
 
 ![alt text](./images/pic1-container-pod.png "Pic 1. Pod")
 
-    
 ```    
 * Nodes [node]:
     Machines set up in the cluster to run containers. Usually managed
@@ -50,9 +49,9 @@ As described Pod is a set of containers running on one node. Just to reiterate -
 Node is a physical/virtual server, which runs the pods. Servers will run some additional processes too, but we will cover those later. Openshift is a multi-tenant environment. Meaning that your servers become commodity hardware and in the best case scenario you should not care where your application is running, or who is running together on the same node.  
 
 
+![](./images/pic2-pod-node.png "Pic 2. Pod & Node")
 
-
-
+```
 * Services [svc]:
     A name representing a set of pods (or external servers) that are
     accessed by other pods. The service gets an IP and a DNS name, and can be
@@ -64,6 +63,7 @@ Node is a physical/virtual server, which runs the pods. Servers will run some ad
 Service’s IP’s should not change during cluster lifecycle. Once you create service object it gets assigned IP and it should stay the same. Usage of IP’s should be avoided and Service Discovery used instead. Services are objects, that enable pods to communicate to each other and external world. 
 
 
+![](./images/pic3-service.png "Pic 3. Services")
 
 
 Additionally, services can have different types.
@@ -95,8 +95,7 @@ DESCRIPTION:
 **NodePort** - Maps to particular PORT on each node. And if traffic reaches ANY cluster nodeIP and particular port - traffic will reach destination pod (3rd picture lower part)
 **ExternalName** - allows you to abstract external resources (like dabatase) and show them as objects in Openshift. (2.1 picture)
 
-
-
+![](./images/pic4-service-types.png "Pic 4. Sertive types")
 
 ```
 * Routes [route]:
@@ -110,7 +109,7 @@ DESCRIPTION:
 Routes will enable HTTP/HTTPS traffic to reach your pods from outside the cluster. Its simple Loadbalancer, which serves traffic to Services (Based on SNI)
 
 
-
+![](./images/pic5-route.png "Pic 5. Routes")
 
 
 ```
@@ -126,8 +125,7 @@ Routes will enable HTTP/HTTPS traffic to reach your pods from outside the cluste
 New name - ReplicaSet. It can be seen as a “watcher”. Each time you deploy a pod we describe a state ( in example3 replicas). Each time state is not as expected replication controller will try to fix it. 
 
 
-
- 
+![](./images/pic6-rs.png "Pic 6. ReplicaSet")
 
 **Now we know basics, let’s look into how to build your applications and relationships there. **
 
@@ -145,7 +143,7 @@ New name - ReplicaSet. It can be seen as a “watcher”. Each time you deploy a
 Image stream is one of the objects you might find difficult to understand if you are coming from Kubernetes’ world. It’s an abstraction for plain images. It allows more flexible image management in the platform. Best analogy would be soft links for binaries in linux. You can have your main image name, which will never change, and you just change pointer images.
 
 
-
+![](./images/pic7-is.png "Pic 7. ImageStream")
 
 ```
 * Build Configuration [bc]:
@@ -167,7 +165,7 @@ Image stream is one of the objects you might find difficult to understand if you
 BuildConfiguration will be your main tool if you want to build your application code. Build is an object, spun from the BuildConfiguration itself. Implementation as you may call it. It takes Base Image abstracted with ImageStream, Code from Version control and produces output image.
 
 
-
+![](./images/pic8-build.png "Pic 8. Build")
 
 ```
 * Deployment Configuration [dc]:
@@ -182,7 +180,7 @@ BuildConfiguration will be your main tool if you want to build your application 
 DeploymentConfig is an object which will spin your application pods. It contains full description how to run your application and how it should be mapped with other objects to create full application stack 
 
 
-
+![](./images/pic9-build-deploy.png "Pic 9. Build & Deploy")
 
 Now let's look into storage, persistence and configuration. Each application will require some configuration, persistence, storage. Or all of those.
  
@@ -199,7 +197,7 @@ Now let's look into storage, persistence and configuration. Each application wil
 
 Secrets, Configs, Storage Volumes are just different types of volumes. Let’s see how they can be used. Simple storage is abstracted using PersistentVolume (PV) and PersistentVolumeClaims (PVC). Administrators usually maintain pool of PV’s and you need to submit a claim to get one. As long as claim exist, nobody else can use the same storage. Where to mount which PV is defined in DC. 
 
-
+![](./images/pic10-storage.png "Pic 10. Storage")
 
 
   ```
@@ -219,7 +217,7 @@ Secret is just another volume. But in this case it is not a plain readable text 
    ConfigMap is very similar to Secrets and PV. It contains application configuration and is mounted as a volume. The difference between secret and ConfigMap is that ConfigMap is not encrypted. 
 
 
-
+![](./images/pic11-deployment-full.png "Pic 10. Deployment")
 
 
 ```
@@ -245,7 +243,7 @@ Self explanatory :) This is how multi-tenancy is implemented.
 Labels are the things you will have to get used to. You will need to label everything, and most of the resources are bound to each other using labels and selectors. For example Services and PODs know which one is which based on labels. DeploymentConfigs knows on which servers/workers pods can be ran. 
 
 
-
+![](./images/meme-labels.png "Pic Meme. Labels")
 
 Now some of the other concepts you might find around the place:
 
@@ -255,8 +253,7 @@ Openshift contains multiple options for those. You can set BC to be executed whe
 **DaemonSet**:
 DaemonSet is very useful when you need to run containers on each node or set of nodes. It takes labels and makes sure container runs as per labels. It being used to run monitoring agents, log shipping, or any other utilities, which needs dynamic scalability based on resources. In example if you scale number of nodes DaemonSet will make sure new node has an instance of your container running.
 
-
-
+![](./images/pic12-ds.png "Pic 12. DaemonSet")
 
 **StatfullSet**:
 As per Kubernetes documentation: `Manage the deployment and scaling of a set of Pods, and provide guarantees about ordering. They do so by maintaining a unique, sticky identity for each of their Pods.`
@@ -278,8 +275,7 @@ As soon as you scale my-app-3 will be created. If my-app-1 dies it will get recr
 **Templates**:
 Templates is Openshift’s way to replicate same deployments over and over again. It just takes objects’ descriptions and replaces placeholders with parameters. It helps to have one file and replicate same deployments multiple times instead of rewriting files.
 
-
-
+![](./images/pic13-e2e.png "Pic 13. End to End")
 
 These are just small insights how the main components relate to each other. And small illustration how small stack of components could looks like (picture above). There are many more components involved and even more coming. But in the end you can imagine all these building blocks as a big LEGO game. You take a bunch of them and build something. 
 
