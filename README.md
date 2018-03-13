@@ -1,7 +1,5 @@
-Openshift Deployment 121
+Openshift Deployment 101
 =======================
-
-<TODO: add intro for public>
 
 `oc` client can help a lot, but it still does not give information about all relationships. Honestly, there are very few good documents explaining full scope. And most of them expect you to know the basics. We will try to cover some of the basics here.
 
